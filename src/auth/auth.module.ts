@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { AuthController } from 'src/auth/auth.controller';
-import { AuthService } from 'src/auth/auth.service';
-import { User, UserSchema } from 'src/schemas/user.schema';
+import { AuthController } from '../auth/auth.controller.js';
+import { AuthService } from '../auth/auth.service.js';
+import { User, UserSchema } from '../schemas/user.schema.js';
 import {
   EmailVerification,
   EmailVerificationSchema,
-} from 'src/schemas/email-verification.schema';
+} from '../schemas/email-verification.schema.js';
 import {
   PasswordResetToken,
   PasswordResetTokenSchema,
-} from 'src/schemas/password-reset-token.schema';
+} from '../schemas/password-reset-token.schema.js';
 
 @Module({
   imports: [

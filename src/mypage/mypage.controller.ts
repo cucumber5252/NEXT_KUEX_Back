@@ -1,5 +1,5 @@
 import { Controller, Get, Req, UnauthorizedException } from '@nestjs/common';
-import { MypageService } from 'src/mypage/mypage.service';
+import { MypageService } from '../mypage/mypage.service.js';
 import { FastifyRequest } from 'fastify';
 
 @Controller('mypage')

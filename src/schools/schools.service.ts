@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { School } from 'src/schemas/school.schema';
-import { Country } from 'src/schemas/country.schema';
-import { Continent } from 'src/schemas/continent.schema';
+import { School } from '../schemas/school.schema.js';
+import { Country } from '../schemas/country.schema.js';
+import { Continent } from '../schemas/continent.schema.js';
 import { FastifyRequest } from 'fastify';
-import { SchoolType, CountryType, ContinentType } from 'src/types';
-import { SchoolFilter, SchoolResponse } from 'src/types/school';
+import { SchoolType, CountryType, ContinentType } from '../types/index.js';
+import { SchoolFilter, SchoolResponse } from '../types/school.js';
 
 @Injectable()
 export class SchoolsService {
@@ -37,8 +37,8 @@ export class SchoolsService {
     if (searchParams.has('toefl')) {
       filter.toefl = { $lte: Number(searchParams.get('toefl')) };
     }
-    if (searchParams.has('ielts')) {
-      filter.ielts = { $lte: Number(searchParams.get('ielts')) };
+    if (searchParams.has('ie.js')) {
+      filter.iets = { $lte: Number(searchParams.get('ie.js')) };
     }
     if (searchParams.has('availableSemester')) {
       filter.availableSemester = searchParams.get('availableSemester') as any;
@@ -141,7 +141,7 @@ export class SchoolsService {
       { $unwind: '$countryId' },
       {
         $lookup: {
-          from: 'continents',
+          from: 'contine.js',
           localField: 'countryId.continentId',
           foreignField: '_id',
           as: 'countryId.continentId',
@@ -166,7 +166,7 @@ export class SchoolsService {
         city: school.city,
         minCompletedSemester: school.minCompletedSemester,
         toefl: school.toefl,
-        ielts: school.ielts,
+        iets: school.iets,
         availableSemester: school.availableSemester,
         hasDormitory: school.hasDormitory,
         qsRank: school.qsRank,
@@ -251,7 +251,7 @@ export class SchoolsService {
       minGpa?: number;
       minCompletedSemester?: number;
       toefl?: number;
-      ielts?: number;
+      iets?: number;
       availableSemester?: string;
       hasDormitory?: boolean;
       homepageUrl?: string;
@@ -270,7 +270,7 @@ export class SchoolsService {
       minGpa: populated.minGpa,
       minCompletedSemester: populated.minCompletedSemester,
       toefl: populated.toefl,
-      ielts: populated.ielts,
+      iets: populated.iets,
       availableSemester: populated.availableSemester,
       hasDormitory: populated.hasDormitory,
       homepageUrl: populated.homepageUrl,

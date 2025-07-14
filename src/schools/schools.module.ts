@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SchoolsController } from 'src/schools/schools.controller';
-import { SchoolsService } from 'src/schools/schools.service';
-import { School, SchoolSchema } from 'src/schemas/school.schema';
-import { Country, CountrySchema } from 'src/schemas/country.schema';
-import { Continent, ContinentSchema } from 'src/schemas/continent.schema';
+import { SchoolsController } from '../schools/schools.controller.js';
+import { SchoolsService } from '../schools/schools.service.js';
+import { School, SchoolSchema } from '../schemas/school.schema.js';
+import { Country, CountrySchema } from '../schemas/country.schema.js';
+import { Continent, ContinentSchema } from '../schemas/continent.schema.js';
 
 @Module({
   imports: [

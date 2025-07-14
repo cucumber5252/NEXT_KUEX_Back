@@ -1,5 +1,5 @@
-// interfaces/report.ts
-import { SchoolWithCountry } from 'src/types/school';
+// interfaces/reportts
+import { SchoolWithCountry } from '../types/school.js';
 
 // 보고서 콘텐츠 타입
 export interface ReportContent {
@@ -59,7 +59,7 @@ export interface ReportListItem {
     name_kor: string;
     city: string;
     toefl: number;
-    ielts: number;
+    iets: number;
     minCompletedSemester: number;
     availableSemester: string;
     hasDormitory: boolean;
@@ -80,7 +80,7 @@ export interface ReportDetail {
     country: string;
     minCompletedSemester: number;
     toefl: number;
-    ielts: number;
+    iets: number;
     availableSemester: string;
     hasDormitory: boolean;
   };
@@ -110,7 +110,7 @@ export interface ReportResponse {
     name_kor: string;
     city?: string;
     toefl: number;
-    ielts: number;
+    iets: number;
     minCompletedSemester: number;
     availableSemester: string;
     hasDormitory: boolean;
@@ -134,7 +134,7 @@ export interface ReportResponseItem {
     name_kor: string;
     city: string;
     toefl: number;
-    ielts: number;
+    iets: number;
     minCompletedSemester: number;
     availableSemester: string;
     hasDormitory: boolean;
@@ -162,7 +162,7 @@ export interface ReportRedisFilters {
   country?: string | null;
   schoolId?: string | null;
   toefl?: string | null;
-  ielts?: string | null;
+  iets?: string | null;
   minCompletedSemester?: string | null;
   availableSemester?: string | null;
   hasDormitory?: string | null;

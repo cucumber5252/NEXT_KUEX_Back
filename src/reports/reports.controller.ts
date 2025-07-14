@@ -1,15 +1,15 @@
 import { Controller, Get, Post, Param, Req, Res } from '@nestjs/common';
-import { ReportsService } from 'src/reports/reports.service';
+import { RepotsService } from '../reports/reports.service.js';
 import { FastifyRequest, FastifyReply } from 'fastify';
 
-@Controller('reports')
-export class ReportsController {
-  constructor(private readonly reportsService: ReportsService) {}
+@Controller('repo.js')
+export class RepotsController {
+  constructor(private readonly repotsService: RepotsService) {}
 
   @Get()
-  async getReports(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
+  async getRepots(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
     try {
-      const result = await this.reportsService.getReports(req);
+      const result = await this.repotsService.getRepots(req);
       return res.status(200).send(result);
     } catch (err) {
       console.error('[보고서 조회 실패]', err);
@@ -24,7 +24,7 @@ export class ReportsController {
     @Res() res: FastifyReply,
   ) {
     try {
-      const result = await this.reportsService.getReportById(id, req);
+      const result = await this.repotsService.getReportById(id, req);
       if (!result)
         return res
           .status(404)
@@ -43,7 +43,7 @@ export class ReportsController {
     @Res() res: FastifyReply,
   ) {
     try {
-      const result = await this.reportsService.toggleLike(id, req);
+      const result = await this.repotsService.toggleLike(id, req);
       return res.status(200).send(result);
     } catch (err) {
       console.error('[좋아요 토글 실패]', err);
@@ -58,7 +58,7 @@ export class ReportsController {
     @Res() res: FastifyReply,
   ) {
     try {
-      const result = await this.reportsService.getLikeStatus(id, req);
+      const result = await this.repotsService.getLikeStatus(id, req);
       return res.status(200).send(result);
     } catch (err) {
       console.error('[좋아요 상태 조회 실패]', err);

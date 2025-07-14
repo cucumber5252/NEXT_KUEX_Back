@@ -1,4 +1,4 @@
-// types/school.ts
+// types/schoolts
 import { Types } from 'mongoose';
 
 export type SchoolWithCountry = {
@@ -9,7 +9,7 @@ export type SchoolWithCountry = {
   minGpa: number;
   minCompletedSemester: number;
   toefl: number;
-  ielts: number;
+  iets: number;
   availableSemester: string;
   hasDormitory: boolean;
   homepageUrl: string;
@@ -28,7 +28,7 @@ export type SchoolWithCountry = {
 export interface SchoolFilter {
   minCompletedSemester?: { $gte: number };
   toefl?: { $gte: number } | { $lte: number };
-  ielts?: { $gte: number } | { $lte: number };
+  iets?: { $gte: number } | { $lte: number };
   availableSemester?: string | null;
   hasDormitory?: boolean;
   countryId?: Types.ObjectId | { $in: Types.ObjectId[] };
@@ -43,7 +43,7 @@ export interface SchoolResponse {
   city?: string;
   minCompletedSemester: number;
   toefl: number;
-  ielts: number;
+  iets: number;
   availableSemester: string;
   hasDormitory: boolean;
   qsRank?: number;

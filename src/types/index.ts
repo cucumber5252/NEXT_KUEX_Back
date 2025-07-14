@@ -25,7 +25,7 @@ export interface SchoolType extends BaseType {
   name_kor: string;
   minCompletedSemester: number;
   toefl: number;
-  ielts: number;
+  iets: number;
   availableSemester: '한 학기만 파견' | '한 학기 파견 후 연장';
   qsRank?: number;
   hasDormitory: boolean;

@@ -19,16 +19,16 @@ import {
   PasswordResetConfirmDto,
   PasswordResetRequestDto,
   PasswordResetValidateDto,
-} from 'src/auth/auth.dto';
-import { User, UserDocument } from 'src/schemas/user.schema';
+} from '../auth/auth.dto.js';
+import { User, UserDocument } from '../schemas/user.schema.js';
 import {
   EmailVerification,
   EmailVerificationDocument,
-} from 'src/schemas/email-verification.schema';
+} from '../schemas/email-verification.schema.js';
 import {
   PasswordResetToken,
   PasswordResetTokenDocument,
-} from 'src/schemas/password-reset-token.schema';
+} from '../schemas/password-reset-token.schema.js';
 
 @Injectable()
 export class AuthService {

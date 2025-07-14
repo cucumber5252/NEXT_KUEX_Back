@@ -10,7 +10,7 @@ import {
 import { jwtVerify } from 'jose';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from '../auth/auth.service.js';
 import {
   EmailRequestDto,
   EmailVerifyDto,
@@ -19,7 +19,7 @@ import {
   PasswordResetConfirmDto,
   PasswordResetRequestDto,
   PasswordResetValidateDto,
-} from 'src/auth/auth.dto';
+} from '../auth/auth.dto.js';
 
 @Controller('auth')
 export class AuthController {

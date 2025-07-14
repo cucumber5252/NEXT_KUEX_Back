@@ -6,10 +6,15 @@ import {
 import { jwtVerify } from 'jose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Report, ReportDocument } from 'src/schemas/report.schema';
-import { User, UserDocument } from 'src/schemas/user.schema';
-import { ReportType, SchoolType, CountryType, ContinentType } from 'src/types';
-import { ReportResponse } from 'src/types/report';
+import { Report, ReportDocument } from '../schemas/report.schema.js';
+import { User, UserDocument } from '../schemas/user.schema.js';
+import {
+  ReportType,
+  SchoolType,
+  CountryType,
+  ContinentType,
+} from '../types/index.js';
+import { ReportResponse } from '../types/report.js';
 
 @Injectable()
 export class MypageService {
@@ -32,7 +37,7 @@ export class MypageService {
     const user = await this.userModel.findById(decoded.userId).lean();
     if (!user) throw new NotFoundException('사용자를 찾을 수 없습니다.');
 
-    const savedReports = await this.reportModel
+    const savedRepots = await this.reportModel
       .find({ likedUsers: decoded.userId })
       .populate({
         path: 'schoolId',
@@ -44,7 +49,7 @@ export class MypageService {
       .sort({ createdAt: -1 })
       .lean();
 
-    const formattedReports: ReportResponse[] = savedReports
+    const formattedRepots: ReportResponse[] = savedRepots
       .filter((report) => !!report.schoolId && !!(report.schoolId as any)._id)
       .map((report) => {
         const reportData = report as unknown as ReportType & {
@@ -69,7 +74,7 @@ export class MypageService {
             name_kor: reportData.schoolId.name_kor,
             city: reportData.schoolId.city || '',
             toefl: reportData.schoolId.toefl || 0,
-            ielts: reportData.schoolId.ielts || 0,
+            iets: reportData.schoolId.iets || 0,
             minCompletedSemester: reportData.schoolId.minCompletedSemester || 0,
             availableSemester: reportData.schoolId.availableSemester || '',
             hasDormitory: reportData.schoolId.hasDormitory || false,
@@ -86,8 +91,8 @@ export class MypageService {
         email: user.email,
         createdAt: user.createdAt,
       },
-      savedReports: formattedReports,
-      savedReportsCount: formattedReports.length,
+      savedRepots: formattedRepots,
+      savedRepotsCount: formattedRepots.length,
     };
   }
 }

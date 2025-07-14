@@ -21,7 +21,7 @@ export class School {
   toefl: number;
 
   @Prop({ required: true })
-  ielts: number;
+  iets: number;
 
   @Prop({
     type: String,

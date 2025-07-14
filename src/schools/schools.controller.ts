@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Req, Res } from '@nestjs/common';
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { SchoolsService } from 'src/schools/schools.service';
+import { SchoolsService } from '../schools/schools.service.js';
 
 @Controller('schools')
 export class SchoolsController {

@@ -1,21 +1,21 @@
 // 전체 코드 - 각주 포함
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, isValidObjectId, Types } from 'mongoose';
-import { Report } from 'src/schemas/report.schema';
-import { School } from 'src/schemas/school.schema';
-import { Country } from 'src/schemas/country.schema';
-import { Continent } from 'src/schemas/continent.schema';
+import { Report } from '../schemas/report.schema.js';
+import { School } from '../schemas/school.schema.js';
+import { Country } from '../schemas/country.schema.js';
+import { Continent } from '../schemas/continent.schema.js';
 import {
   getRedisClient,
   cacheKeys,
   cacheTTL,
-  getUserLikedReports,
-  cacheUserLikedReports,
+  getUserLikedRepots,
+  cacheUserLikedRepots,
   addUserLikeToCache,
   removeUserLikeFromCache,
-} from 'src/lib/redis';
+} from '../lib/redis.js';
 import {
   ReportType,
   SchoolType,
@@ -23,18 +23,18 @@ import {
   ContinentType,
   SortOptions,
   PaginatedResponse,
-} from 'src/types';
+} from '../types/index.js';
 import {
   ReportDetail,
   ReportWithSchool,
   ReportResponseItem,
-} from 'src/types/report';
+} from '../types/report.js';
 import { jwtVerify } from 'jose';
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || '');
 
 @Injectable()
-export class ReportsService {
+export class RepotsService {
   constructor(
     @InjectModel(Report.name) private reportModel: Model<Report>,
     @InjectModel(School.name) private schoolModel: Model<School>,
@@ -43,7 +43,7 @@ export class ReportsService {
   ) {}
 
   // 보고서 목록 조회 (검색, 필터링, 캐싱 포함)
-  async getReports(req: FastifyRequest) {
+  async getRepots(req: FastifyRequest) {
     const redis = getRedisClient();
     const url = new URL(req.url, `http://${req.headers.host}`);
     const searchParams = url.searchParams;
@@ -69,13 +69,13 @@ export class ReportsService {
       country: searchParams.get('country'),
       schoolId: searchParams.get('schoolId'),
       toefl: searchParams.get('toefl'),
-      ielts: searchParams.get('ielts'),
+      iets: searchParams.get('ie.js'),
       minCompletedSemester: searchParams.get('minCompletedSemester'),
       availableSemester: searchParams.get('availableSemester'),
       hasDormitory: searchParams.get('hasDormitory'),
     };
 
-    const cacheKey = cacheKeys.reports(page, limit, filters);
+    const cacheKey = cacheKeys.repots(page, limit, filters);
     let baseData: PaginatedResponse<ReportResponseItem> | null = null;
     try {
       baseData = await redis.get(cacheKey);
@@ -84,10 +84,10 @@ export class ReportsService {
 
         // 사용자별 좋아요 정보 추가
         if (userId && baseData.data) {
-          const userLikedReports = await getUserLikedReports(userId);
+          const userLikedRepots = await getUserLikedRepots(userId);
           baseData.data = baseData.data.map((report) => ({
             ...report,
-            isLiked: userLikedReports.has(report.id),
+            isLiked: userLikedRepots.has(report.id),
           }));
         } else if (baseData.data) {
           // userId가 없으면 모든 isLiked를 false로 설정
@@ -131,7 +131,7 @@ export class ReportsService {
         { $unwind: '$country' },
         {
           $lookup: {
-            from: 'continents',
+            from: 'contine.js',
             localField: 'country.continentId',
             foreignField: '_id',
             as: 'continent',
@@ -189,8 +189,8 @@ export class ReportsService {
     if (searchParams.get('toefl')) {
       schoolFilter.toefl = { $lte: Number(searchParams.get('toefl')) };
     }
-    if (searchParams.get('ielts')) {
-      schoolFilter.ielts = { $lte: Number(searchParams.get('ielts')) };
+    if (searchParams.get('ie.js')) {
+      schoolFilter.iets = { $lte: Number(searchParams.get('ie.js')) };
     }
     if (searchParams.get('availableSemester')) {
       schoolFilter.availableSemester = searchParams.get('availableSemester');
@@ -246,7 +246,7 @@ export class ReportsService {
 
     // Report 쿼리 실행
     const totalItems = await this.reportModel.countDocuments(searchFilter);
-    const reports = await this.reportModel
+    const repots = await this.reportModel
       .find(searchFilter)
       .populate({
         path: 'schoolId',
@@ -258,7 +258,7 @@ export class ReportsService {
       .lean();
 
     //응답 데이터 구성
-    const response = reports.map((r) => {
+    const response = repots.map((r) => {
       const report = r as unknown as ReportType & {
         schoolId: SchoolType & {
           countryId: CountryType & { continentId: ContinentType };
@@ -286,7 +286,7 @@ export class ReportsService {
           name_kor: school.name_kor,
           city: school.city,
           toefl: school.toefl,
-          ielts: school.ielts,
+          iets: school.iets,
           minCompletedSemester: school.minCompletedSemester,
           availableSemester: school.availableSemester,
           hasDormitory: school.hasDormitory,
@@ -324,13 +324,13 @@ export class ReportsService {
     };
 
     // 캐시 저장 및 좋아요 정보 캐시
-    await redis.setex(cacheKey, cacheTTL.reports, paginated);
+    await redis.setex(cacheKey, cacheTTL.repots, paginated);
     console.log('전체 결과 베이스 데이터 캐시에 저장됨:', cacheKey);
 
     // 사용자별 좋아요 정보 수집 및 캐시
     if (userId) {
       const likedReportIds: string[] = [];
-      reports.forEach((report) => {
+      repots.forEach((report) => {
         const reportWithUsers = report as unknown as ReportType;
         if (
           reportWithUsers.likedUsers &&
@@ -341,7 +341,7 @@ export class ReportsService {
       });
 
       if (likedReportIds.length > 0) {
-        await cacheUserLikedReports(userId, likedReportIds);
+        await cacheUserLikedRepots(userId, likedReportIds);
         console.log(
           `사용자 ${userId}의 좋아요 정보 캐시됨: ${likedReportIds.length}개`,
         );
@@ -413,7 +413,7 @@ export class ReportsService {
         country: country?.name ?? '',
         minCompletedSemester: school.minCompletedSemester,
         toefl: school.toefl,
-        ielts: school.ielts,
+        iets: school.iets,
         availableSemester: school.availableSemester,
         hasDormitory: school.hasDormitory,
       },
@@ -481,7 +481,7 @@ export class ReportsService {
         await removeUserLikeFromCache(userId, id);
       }
 
-      const reportKeys = await redis.keys('reports:*');
+      const reportKeys = await redis.keys('repots:*');
       if (reportKeys.length > 0) {
         await redis.del(...reportKeys);
         console.log(`리포트 목록 캐시 ${reportKeys.length}개 무효화`);
@@ -520,9 +520,9 @@ export class ReportsService {
     // 사용자별 좋아요 캐시에서 먼저 확인 -> DB 조회
     let isLiked: boolean;
     try {
-      const userLikedReports = await getUserLikedReports(userId);
-      if (userLikedReports.size > 0) {
-        isLiked = userLikedReports.has(id);
+      const userLikedRepots = await getUserLikedRepots(userId);
+      if (userLikedRepots.size > 0) {
+        isLiked = userLikedRepots.has(id);
       } else {
         // 캐시에서 없으면 DB에서 조회
         const report = await this.reportModel.findById(id, 'likedUsers');

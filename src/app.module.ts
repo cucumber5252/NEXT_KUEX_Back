@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { AuthModule } from 'src/auth/auth.module';
-import { MypageModule } from 'src/mypage/mypage.module';
-import { ReportsModule } from 'src/reports/reports.module';
-import { SchoolsModule } from 'src/schools/schools.module';
+import { AuthModule } from './auth/auth.module.js';
+import { MypageModule } from './mypage/mypage.module.js';
+import { RepotsModule } from './reports/reports.module.js';
+import { SchoolsModule } from './schools/schools.module.js';
 
 @Module({
   imports: [
@@ -26,7 +26,7 @@ import { SchoolsModule } from 'src/schools/schools.module';
       }),
     }),
     AuthModule,
-    ReportsModule,
+    RepotsModule,
     MypageModule,
     SchoolsModule,
   ],

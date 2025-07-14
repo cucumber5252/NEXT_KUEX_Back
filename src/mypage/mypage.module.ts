@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { MypageController } from 'src/mypage/mypage.controller';
-import { MypageService } from 'src/mypage/mypage.service';
-import { User, UserSchema } from 'src/schemas/user.schema';
-import { Report, ReportSchema } from 'src/schemas/report.schema';
+import { MypageController } from '../mypage/mypage.controller.js';
+import { MypageService } from '../mypage/mypage.service.js';
+import { User, UserSchema } from '../schemas/user.schema.js';
+import { Report, ReportSchema } from '../schemas/report.schema.js';
 
 @Module({
   imports: [

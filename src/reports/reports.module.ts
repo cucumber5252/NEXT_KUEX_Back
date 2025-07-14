@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ReportsController } from 'src/reports/reports.controller';
-import { ReportsService } from 'src/reports/reports.service';
+import { RepotsController } from '../reports/reports.controller.js';
+import { RepotsService } from '../reports/reports.service.js';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Report, ReportSchema } from 'src/schemas/report.schema';
-import { School, SchoolSchema } from 'src/schemas/school.schema';
-import { Country, CountrySchema } from 'src/schemas/country.schema';
-import { Continent, ContinentSchema } from 'src/schemas/continent.schema';
+import { Report, ReportSchema } from '../schemas/report.schema.js';
+import { School, SchoolSchema } from '../schemas/school.schema.js';
+import { Country, CountrySchema } from '../schemas/country.schema.js';
+import { Continent, ContinentSchema } from '../schemas/continent.schema.js';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { Continent, ContinentSchema } from 'src/schemas/continent.schema';
       { name: Continent.name, schema: ContinentSchema },
     ]),
   ],
-  controllers: [ReportsController],
-  providers: [ReportsService],
+  controllers: [RepotsController],
+  providers: [RepotsService],
 })
-export class ReportsModule {}
+export class RepotsModule {}

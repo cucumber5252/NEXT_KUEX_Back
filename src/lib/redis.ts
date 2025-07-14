@@ -1,4 +1,4 @@
-import { ReportRedisFilters } from 'src/types/report';
+import { ReportRedisFilters } from '../types/report.js';
 
 import { Redis } from '@upstash/redis';
 import { createHash } from 'crypto';
@@ -35,11 +35,11 @@ function createFilterHash(filters: ReportRedisFilters): string {
 }
 
 export const cacheKeys = {
-  reports: (page: number, limit: number, filters: ReportRedisFilters) => {
+  repots: (page: number, limit: number, filters: ReportRedisFilters) => {
     const filterHash = createFilterHash(filters);
-    return `reports:${page}:${limit}:${filterHash}`;
+    return `repots:${page}:${limit}:${filterHash}`;
   },
-  reportSchools: () => `reports:schools:meta`,
+  reportSchools: () => `repots:schools:meta`,
   userLikes: (userId: string) => `user:${userId}:likes`,
   report: (id: string) => `report:${id}`,
   schools: (filters?: string) => `schools:${filters || 'all'}`,
@@ -47,7 +47,7 @@ export const cacheKeys = {
 };
 
 export const cacheTTL = {
-  reports: 60 * 30, // 30 minutes
+  repots: 60 * 30, // 30 minutes
   reportSchools: 60 * 60 * 24, // 24 hours
   userLikes: 60 * 60 * 2, // 2 hours
   report: 60 * 60, // 1 hour
@@ -55,21 +55,19 @@ export const cacheTTL = {
   school: 60 * 60 * 2, // 2 hours
 };
 
-export async function getUserLikedReports(
-  userId: string,
-): Promise<Set<string>> {
+export async function getUserLikedRepots(userId: string): Promise<Set<string>> {
   const redis = getRedisClient();
   try {
     const cacheKey = cacheKeys.userLikes(userId);
-    const likedReports = await redis.smembers(cacheKey);
-    return new Set(likedReports as string[]);
+    const likedRepots = await redis.smembers(cacheKey);
+    return new Set(likedRepots as string[]);
   } catch (error) {
     console.warn('사용자 좋아요 캐시 조회 실패:', error);
     return new Set();
   }
 }
 
-export async function cacheUserLikedReports(
+export async function cacheUserLikedRepots(
   userId: string,
   reportIds: string[],
 ): Promise<void> {
