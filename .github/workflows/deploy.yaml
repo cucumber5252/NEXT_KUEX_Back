@@ -1,4 +1,4 @@
-name: Deploy NestJS to EC2
+name: Deploy with Self-hosted Runner
 
 on:
   push:
@@ -7,23 +7,17 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    name: Deploy on EC2
+    runs-on: self-hosted
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Decode SSH private key
+      - name: Install dependencies & build
         run: |
-          echo "${{ secrets.EC2_SSH_KEY }}" | base64 -d > private_key.pem
-          chmod 600 private_key.pem
+          npm install
+          npm run build
 
-      - name: Deploy to EC2
+      - name: Restart server
         run: |
-          ssh -i private_key.pem -o StrictHostKeyChecking=no -p ${{ secrets.EC2_SSH_PORT }} ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            cd ~/backend
-            git pull origin main
-            npm install
-            npm run build
-            pm2 restart nest-api
-          EOF
+          pm2 restart nest-api
