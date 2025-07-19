@@ -117,8 +117,10 @@ export class AuthService {
   async login(dto: LoginDto) {
     const { email, password } = dto;
     const user = await this.userModel.findOne({ email });
+
     if (!user || !(await compare(password, user.password)))
       throw new UnauthorizedException();
+
     const jwt = await new SignJWT({
       userId: (user._id as any).toString(),
       email,
